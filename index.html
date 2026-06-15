@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SWOP Career Path Analyzer</title>
+  <meta name="description" content="Analyze your Strengths, Weaknesses, Opportunities and Projections to discover ideal career paths aligned with industry growth trends." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <!-- html2pdf.js CDN (for PDF export) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js" defer></script>
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef5ff', 100: '#d9e8ff', 200: '#bcd8ff', 300: '#8ec0ff',
+              400: '#599fff', 500: '#3478ff', 600: '#1a5af5', 700: '#1347e1',
+              800: '#163ab6', 900: '#18358f', 950: '#142257'
+            },
+            surface: { 800: '#1e1e2e', 900: '#11111b', 700: '#2a2a3c' }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom styles (external) -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="font-sans text-white antialiased">
+
+  <!-- Animated background orbs -->
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+  <div class="orb orb-3" aria-hidden="true"></div>
+
+  <!-- ============================================
+       MAIN CONTAINER
+       ============================================ -->
+  <div class="relative z-10 max-w-3xl mx-auto px-4 py-10 sm:py-16">
+
+    <!-- ── Header ── -->
+    <header class="text-center mb-10">
+      <div class="inline-flex items-center gap-2 mb-3">
+        <span class="text-3xl" aria-hidden="true">🧭</span>
+        <h1 class="text-4xl sm:text-5xl font-black tracking-tight bg-gradient-to-r from-brand-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+          SWOP Analyzer
+        </h1>
+      </div>
+      <p class="text-gray-400 text-sm sm:text-base max-w-md mx-auto">
+        Strengths · Weaknesses · Opportunities · Projections — Discover your ideal career path.
+      </p>
+    </header>
+
+    <!-- ── Stepper (with aria-current managed by JS) ── -->
+    <nav aria-label="Assessment progress" class="flex items-center justify-center gap-0 mb-10" id="stepperContainer">
+      <div class="flex flex-col items-center z-10">
+        <div id="dot-1" role="status" aria-current="step" class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold bg-brand-500 text-white shadow-lg shadow-brand-500/30 transition-all duration-300">1</div>
+        <span class="text-[11px] text-gray-400 mt-1.5">Skills</span>
+      </div>
+      <div class="relative w-20 h-1 bg-surface-700 rounded-full mx-1 overflow-hidden" aria-hidden="true">
+        <div id="line-1" class="stepper-line absolute inset-y-0 left-0 bg-brand-500 rounded-full" style="width:0%"></div>
+      </div>
+      <div class="flex flex-col items-center z-10">
+        <div id="dot-2" role="status" class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold bg-surface-700 text-gray-400 transition-all duration-300">2</div>
+        <span class="text-[11px] text-gray-400 mt-1.5">Soft Skills</span>
+      </div>
+      <div class="relative w-20 h-1 bg-surface-700 rounded-full mx-1 overflow-hidden" aria-hidden="true">
+        <div id="line-2" class="stepper-line absolute inset-y-0 left-0 bg-brand-500 rounded-full" style="width:0%"></div>
+      </div>
+      <div class="flex flex-col items-center z-10">
+        <div id="dot-3" role="status" class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold bg-surface-700 text-gray-400 transition-all duration-300">3</div>
+        <span class="text-[11px] text-gray-400 mt-1.5">Interests</span>
+      </div>
+      <div class="relative w-20 h-1 bg-surface-700 rounded-full mx-1 overflow-hidden" aria-hidden="true">
+        <div id="line-3" class="stepper-line absolute inset-y-0 left-0 bg-brand-500 rounded-full" style="width:0%"></div>
+      </div>
+      <div class="flex flex-col items-center z-10">
+        <div id="dot-4" role="status" class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold bg-surface-700 text-gray-400 transition-all duration-300">4</div>
+        <span class="text-[11px] text-gray-400 mt-1.5">Results</span>
+      </div>
+    </nav>
+
+
+    <!-- ╔════════════════════════════════════════════╗
+         ║  STEP 1: TECHNICAL SKILLS                  ║
+         ╚════════════════════════════════════════════╝ -->
+    <section id="step-1" class="step-section active glass rounded-2xl p-6 sm:p-8" aria-labelledby="step1-heading">
+      <h2 id="step1-heading" class="text-xl font-bold mb-1">⚙️ Technical Skills</h2>
+      <p class="text-gray-400 text-sm mb-6">Rate each skill from 1 (beginner) to 10 (expert).</p>
+
+      <div class="space-y-5">
+        <!-- Logical / Analytical Thinking -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-logic" class="text-sm font-medium">Logical / Analytical Thinking</label>
+            <span id="val-logic" class="text-brand-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-logic" min="1" max="10" value="5" aria-label="Logical / Analytical Thinking (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Programming / Coding -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-coding" class="text-sm font-medium">Programming / Coding</label>
+            <span id="val-coding" class="text-brand-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-coding" min="1" max="10" value="5" aria-label="Programming / Coding (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Design / Creativity -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-design" class="text-sm font-medium">Design / Creativity</label>
+            <span id="val-design" class="text-brand-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-design" min="1" max="10" value="5" aria-label="Design / Creativity (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Data Analysis / Math -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-data" class="text-sm font-medium">Data Analysis / Math</label>
+            <span id="val-data" class="text-brand-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-data" min="1" max="10" value="5" aria-label="Data Analysis / Math (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Networking / Systems -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-network" class="text-sm font-medium">Networking / Systems</label>
+            <span id="val-network" class="text-brand-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-network" min="1" max="10" value="5" aria-label="Networking / Systems (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-8">
+        <button id="btn-step1-next" type="button" class="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-brand-500/20 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-surface-900">
+          Next →
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ╔════════════════════════════════════════════╗
+         ║  STEP 2: SOFT SKILLS                       ║
+         ╚════════════════════════════════════════════╝ -->
+    <section id="step-2" class="step-section glass rounded-2xl p-6 sm:p-8" aria-labelledby="step2-heading">
+      <h2 id="step2-heading" class="text-xl font-bold mb-1">🤝 Soft Skills</h2>
+      <p class="text-gray-400 text-sm mb-6">Rate your interpersonal and professional abilities.</p>
+
+      <div class="space-y-5">
+        <!-- Communication -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-comm" class="text-sm font-medium">Communication</label>
+            <span id="val-comm" class="text-purple-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-comm" min="1" max="10" value="5" aria-label="Communication (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Leadership -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-lead" class="text-sm font-medium">Leadership</label>
+            <span id="val-lead" class="text-purple-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-lead" min="1" max="10" value="5" aria-label="Leadership (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Teamwork -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-team" class="text-sm font-medium">Teamwork</label>
+            <span id="val-team" class="text-purple-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-team" min="1" max="10" value="5" aria-label="Teamwork (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Problem Solving -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-problem" class="text-sm font-medium">Problem Solving</label>
+            <span id="val-problem" class="text-purple-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-problem" min="1" max="10" value="5" aria-label="Problem Solving (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+        <!-- Adaptability -->
+        <div>
+          <div class="flex justify-between mb-1">
+            <label for="skill-adapt" class="text-sm font-medium">Adaptability</label>
+            <span id="val-adapt" class="text-purple-400 font-bold text-sm">5</span>
+          </div>
+          <div class="slider-wrapper">
+            <input type="range" id="skill-adapt" min="1" max="10" value="5" aria-label="Adaptability (1 to 10)" class="focus:ring-2 focus:ring-brand-500" />
+            <span class="slider-tooltip">5</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-8">
+        <button id="btn-step2-back" type="button" class="px-6 py-2.5 border border-white/10 hover:bg-white/5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400">
+          ← Back
+        </button>
+        <button id="btn-step2-next" type="button" class="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-brand-500/20 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-surface-900">
+          Next →
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ╔════════════════════════════════════════════╗
+         ║  STEP 3: INDUSTRY INTERESTS                ║
+         ╚════════════════════════════════════════════╝ -->
+    <section id="step-3" class="step-section glass rounded-2xl p-6 sm:p-8" aria-labelledby="step3-heading">
+      <h2 id="step3-heading" class="text-xl font-bold mb-1">🏢 Industry Interests</h2>
+      <p class="text-gray-400 text-sm mb-6">Select the industries you're most drawn to.</p>
+
+      <div class="space-y-4">
+        <div>
+          <label for="interest-primary" class="block text-sm font-medium mb-1.5">Primary Interest</label>
+          <select id="interest-primary" class="w-full bg-surface-700 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-brand-500 transition">
+            <option value="technology">💻 Technology &amp; Software</option>
+            <option value="finance">📊 Finance &amp; Fintech</option>
+            <option value="healthcare">🏥 Healthcare &amp; Biotech</option>
+            <option value="design">🎨 Design &amp; Media</option>
+            <option value="education">📚 Education &amp; EdTech</option>
+            <option value="cybersecurity">🔒 Cybersecurity</option>
+          </select>
+        </div>
+        <div>
+          <label for="interest-secondary" class="block text-sm font-medium mb-1.5">Secondary Interest</label>
+          <select id="interest-secondary" class="w-full bg-surface-700 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-brand-500 transition">
+            <option value="technology">💻 Technology &amp; Software</option>
+            <option value="finance">📊 Finance &amp; Fintech</option>
+            <option value="healthcare">🏥 Healthcare &amp; Biotech</option>
+            <option value="design">🎨 Design &amp; Media</option>
+            <option value="education">📚 Education &amp; EdTech</option>
+            <option value="cybersecurity">🔒 Cybersecurity</option>
+          </select>
+        </div>
+        <div>
+          <label for="student-name" class="block text-sm font-medium mb-1.5">Your Name (for the report) <span class="text-red-400">*</span></label>
+          <input type="text" id="student-name" placeholder="e.g. Arjun Mehta" required
+            class="w-full bg-surface-700 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-brand-500 transition placeholder-gray-500" />
+          <p id="name-error" class="error-message" role="alert">Please enter your name before generating the report.</p>
+        </div>
+      </div>
+
+      <!-- Human Verification (Math CAPTCHA) -->
+      <div id="captcha-container" class="captcha-container mt-6 p-4 bg-surface-800/40 border border-white/10 rounded-xl">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-lg" aria-hidden="true">🛡️</span>
+          <p class="text-sm font-semibold text-gray-300">Human Verification</p>
+        </div>
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <label for="captcha-answer" class="text-sm text-gray-400 whitespace-nowrap">
+            Solve: <span id="captcha-question" class="text-white font-bold"></span>
+          </label>
+          <input type="number" id="captcha-answer" placeholder="Your answer"
+            aria-label="Enter the answer to the math problem above"
+            class="w-full sm:w-32 bg-surface-700 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white outline-none focus:ring-2 focus:ring-brand-500 transition placeholder-gray-500" />
+        </div>
+        <p id="captcha-error" class="error-message" role="alert">Verification failed. Please solve the math problem.</p>
+      </div>
+
+      <div class="flex justify-between mt-8">
+        <button id="btn-step3-back" type="button" class="px-6 py-2.5 border border-white/10 hover:bg-white/5 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-brand-400">
+          ← Back
+        </button>
+        <button id="btn-analyze" type="button" class="px-6 py-2.5 bg-gradient-to-r from-brand-500 to-purple-500 hover:from-brand-600 hover:to-purple-600 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-brand-500/20 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-surface-900">
+          🔍 Analyze My Career Path
+        </button>
+      </div>
+    </section>
+
+
+    <!-- ╔════════════════════════════════════════════╗
+         ║  STEP 4: RESULTS DASHBOARD                 ║
+         ╚════════════════════════════════════════════╝ -->
+    <section id="step-4" class="step-section glass rounded-2xl p-6 sm:p-8" aria-labelledby="step4-heading">
+
+      <!-- Loading Spinner Overlay (shown for 1.5s) -->
+      <div id="loading-overlay" class="loading-overlay glass rounded-2xl" aria-live="polite">
+        <div class="spinner mb-4"></div>
+        <p class="text-gray-400 text-sm font-medium mb-4">Analyzing your skills profile…</p>
+        <div class="w-full max-w-xs space-y-3">
+          <div class="skeleton-bar w-full"></div>
+          <div class="skeleton-bar w-4/5"></div>
+          <div class="skeleton-bar w-3/5"></div>
+        </div>
+      </div>
+
+      <!-- Actual results content (hidden while loading) -->
+      <div id="results-content">
+        <div class="text-center mb-6">
+          <h2 id="step4-heading" class="text-2xl font-bold mb-1">📊 Your SWOP Dashboard</h2>
+          <p id="greeting" class="text-gray-400 text-sm"></p>
+        </div>
+
+        <!-- Radar Chart -->
+        <div id="radarChartContainer" class="bg-surface-800/50 rounded-2xl p-4 mb-6 border border-white/5">
+          <canvas id="radarChart" aria-label="Radar chart comparing your skill profile with the ideal career profile"></canvas>
+        </div>
+
+        <!-- Screen-reader accessible table (visually hidden) -->
+        <table id="sr-chart-table" class="sr-only" aria-label="Skill comparison data for radar chart">
+          <caption>Your skill scores compared against the ideal profile for your top career match</caption>
+          <thead>
+            <tr>
+              <th scope="col">Skill</th>
+              <th scope="col">Your Score</th>
+              <th scope="col">Ideal Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated dynamically by app.js -->
+          </tbody>
+        </table>
+
+        <!-- SWOP Summary -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="swopSummary"></div>
+
+        <!-- Top Career Projections -->
+        <h3 class="text-lg font-bold mb-3">🚀 Top Career Projections</h3>
+        <div class="space-y-4" id="careerCards"></div>
+
+        <!-- Skill Badges -->
+        <div class="mt-6">
+          <h3 class="text-lg font-bold mb-3">🏅 Your Skill Profile</h3>
+          <div class="flex flex-wrap gap-2" id="skillBadges"></div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 mt-8">
+          <button id="btn-retake" type="button" class="flex-1 px-5 py-2.5 border border-white/10 hover:bg-white/5 rounded-xl text-sm font-semibold transition-colors text-center focus:outline-none focus:ring-2 focus:ring-brand-400">
+            🔄 Re-take Assessment
+          </button>
+          <button id="btn-download" type="button" class="flex-1 px-5 py-2.5 bg-gradient-to-r from-brand-500 to-purple-500 hover:from-brand-600 hover:to-purple-600 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-brand-500/20 text-center focus:outline-none focus:ring-2 focus:ring-brand-400 focus:ring-offset-2 focus:ring-offset-surface-900">
+            📄 Export PDF
+          </button>
+          <button id="btn-share" type="button" class="flex-1 px-5 py-2.5 border border-brand-500/40 hover:bg-brand-500/10 rounded-xl text-sm font-semibold transition-colors text-center text-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-400">
+            🔗 Share Results
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Application logic (external) -->
+  <script src="app.js"></script>
+</body>
+</html>

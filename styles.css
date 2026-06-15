@@ -1,0 +1,436 @@
+/* ==========================================================
+   SWOP Career Path Analyzer — styles.css
+   All visual styles extracted from inline <style> and enhanced
+   with tooltip, loader, accessibility, and mobile improvements.
+   ========================================================== */
+
+/* ── Base & Background ── */
+body {
+  background: linear-gradient(135deg, #0f0c29 0%, #1a1a40 40%, #11111b 100%);
+  min-height: 100vh;
+}
+
+/* ── Animated gradient orbs ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+.orb-1 { width: 500px; height: 500px; background: #3478ff; top: -120px; left: -100px; animation: float 12s ease-in-out infinite; }
+.orb-2 { width: 400px; height: 400px; background: #a855f7; bottom: -80px; right: -60px; animation: float 15s ease-in-out infinite reverse; }
+.orb-3 { width: 300px; height: 300px; background: #06b6d4; top: 50%; left: 60%; animation: float 10s ease-in-out infinite 2s; }
+
+@keyframes float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -20px) scale(1.05); }
+  66%      { transform: translate(-20px, 15px) scale(0.95); }
+}
+
+/* ── Glassmorphism card ── */
+.glass {
+  background: rgba(30, 30, 46, 0.6);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ── Step section transitions ── */
+.step-section {
+  display: none;
+  animation: fadeSlide 0.45s ease forwards;
+}
+.step-section.active {
+  display: block;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Custom range slider ── */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #3478ff 0%, #a855f7 100%);
+  outline: none;
+  position: relative;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(52, 120, 255, 0.6);
+  transition: transform 0.15s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 8px rgba(52, 120, 255, 0.6);
+}
+
+/* Visible focus ring for range sliders (a11y) */
+input[type="range"]:focus-visible {
+  outline: 2px solid #3478ff;
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+/* ── Slider floating tooltip ── */
+.slider-wrapper {
+  position: relative;
+}
+.slider-tooltip {
+  position: absolute;
+  top: -36px;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #3478ff, #a855f7);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+  z-index: 20;
+}
+.slider-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #a855f7;
+}
+.slider-wrapper:hover .slider-tooltip,
+.slider-wrapper input:focus ~ .slider-tooltip,
+.slider-wrapper input:active ~ .slider-tooltip {
+  opacity: 1;
+}
+
+/* ── Stepper progress bar ── */
+.stepper-line {
+  transition: width 0.5s ease;
+}
+
+/* ── Projection card hover ── */
+.proj-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.proj-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 40px rgba(52, 120, 255, 0.25);
+}
+
+/* ── Skill badge shimmer ── */
+.badge-shimmer {
+  background: linear-gradient(135deg, rgba(52,120,255,0.15), rgba(168,85,247,0.15));
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ── Chart container ── */
+#radarChartContainer canvas {
+  max-height: 360px;
+}
+
+/* ── Loading spinner overlay ── */
+.loading-overlay {
+  display: none;
+  position: relative;
+}
+.loading-overlay.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+.spinner {
+  width: 56px;
+  height: 56px;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top-color: #3478ff;
+  border-right-color: #a855f7;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Skeleton shimmer for loading state */
+.skeleton-bar {
+  height: 16px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease infinite;
+}
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Validation error ── */
+.input-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25);
+}
+.error-message {
+  color: #f87171;
+  font-size: 12px;
+  margin-top: 4px;
+  display: none;
+}
+.error-message.visible {
+  display: block;
+}
+
+/* ── Math CAPTCHA container ── */
+.captcha-container {
+  position: relative;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.captcha-container:focus-within {
+  border-color: rgba(52, 120, 255, 0.4);
+  box-shadow: 0 0 16px rgba(52, 120, 255, 0.08);
+}
+/* Hide number input spinners for a cleaner look */
+#captcha-answer::-webkit-inner-spin-button,
+#captcha-answer::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#captcha-answer {
+  -moz-appearance: textfield;
+}
+
+/* ── Screen-reader only utility (a11y) ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Toast notification (for share link copy) ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: rgba(30, 30, 46, 0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #d1d5db;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 500;
+  z-index: 100;
+  opacity: 0;
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── Mobile responsiveness ── */
+@media (max-width: 480px) {
+  /* Stack SWOP summary cards into a single column */
+  #swopSummary {
+    grid-template-columns: 1fr !important;
+  }
+  /* Shrink chart on very small screens */
+  #radarChartContainer canvas {
+    max-height: 260px;
+  }
+  /* Reduce header size */
+  h1 {
+    font-size: 1.8rem !important;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   PDF EXPORT SPECIFIC STYLES
+   ───────────────────────────────────────────── */
+/* Container that holds the PDF content while it's generated. 
+   We keep it positioned absolutely and off-screen to avoid disrupting the UI. */
+#pdf-report-container {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  width: 800px; /* Fixed width for consistent a4 scaling */
+  background: #11111b; /* Solid background, no transparency */
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  z-index: -100;
+}
+
+/* Explicit page break class for html2pdf */
+.html2pdf__page-break {
+  page-break-before: always !important;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* A standard full page within the PDF */
+.pdf-page {
+  width: 100%;
+  min-height: 1120px; /* Approximate A4 height ratio for 800px width */
+  padding: 40px 50px;
+  box-sizing: border-box;
+  background: #11111b;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Print-safe card (replaces glassmorphism) */
+.pdf-card {
+  background: #1e1e2e; /* Solid color */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+/* PDF Headers & Texts */
+.pdf-title {
+  font-size: 32px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  background: none;
+  -webkit-text-fill-color: initial;
+  color: #599fff;
+}
+.pdf-subtitle {
+  font-size: 16px;
+  color: #9ca3af;
+  margin-bottom: 40px;
+}
+.pdf-h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #ffffff;
+  border-bottom: 2px solid #3478ff;
+  padding-bottom: 8px;
+  display: inline-block;
+}
+.pdf-h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #e5e7eb;
+}
+.pdf-text {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d1d5db;
+}
+
+/* Cover page specific styling */
+.pdf-cover {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.pdf-cover-logo {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+.pdf-cover-name {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 20px 0 10px 0;
+  color: #ffffff;
+}
+.pdf-cover-date {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 40px;
+}
+
+/* Grid for swop and skills */
+.pdf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.pdf-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Custom minimal bar chart for skills in PDF */
+.pdf-skill-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.pdf-skill-name {
+  width: 140px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.pdf-skill-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: #2a2a3c;
+  border-radius: 4px;
+  margin: 0 12px;
+  overflow: hidden;
+}
+.pdf-skill-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+.pdf-skill-val {
+  width: 30px;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: right;
+}
+
+/* Footer for all pages */
+.pdf-footer {
+  position: absolute;
+  bottom: 20px;
+  left: 50px;
+  right: 50px;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 10px;
+  font-size: 10px;
+  color: #6b7280;
+}
